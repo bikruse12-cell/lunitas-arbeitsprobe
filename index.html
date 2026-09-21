@@ -2104,6 +2104,38 @@ if(typeof THREE==='undefined' || !(function(){try{var c=document.createElement('
   }));
   scene.add(particles);
 
+  /* ---------- Hintergrund-Leben fuer die hinteren Abschnitte ---------- */
+  /* Ab etwa der Haelfte der Seite liegt der Sorten-Ring hinter der Kamera
+     und die Foto-Panels stehen weit am Rand - der Hintergrund war dort
+     schwarz. Ein lockerer Schwarm kleiner Empanadas in der Tiefe zieht nun
+     in jedem Abschnitt am Bildrand vorbei. Die Plaetze sind gegen die
+     Textlagen gerechnet: Der Ort (Text rechts) -> oben und links unten,
+     Foodtruck -> unten, Versand -> oben und rechter Rand, Kontakt (Text
+     links, Foto rechts mittig) -> rechts unten. */
+  var schwarm=[];
+  var schwarmLage=mobile?[
+    // Handy: Texte laufen ueber die volle Breite, darum kleiner, wenige,
+    // und an den seitlichen Raendern bzw. unten, wo zwischen den Bloecken Luft ist
+    [ 2.4,-4.1,-38,0.45],[ 1.6, 3.6,-46,0.40],[-2.2,-3.6,-53,0.50],[ 2.8, 3.4,-61,0.45],
+    [ 1.8,-3.8,-67,0.45],[-2.2,-3.8,-67,0.45],[ 2.0,-3.2,-82,0.50]
+  ]:[
+    [-7.5, 3.4,-36,0.55],[ 7.0, 3.8,-39,0.45],[-7.0,-4.4,-45,0.60],[ 7.5,-4.2,-47,0.50],
+    [ 8.5,-3.0,-51,0.55],[-7.0,-4.0,-55,0.65],[-7.0, 4.0,-64,0.50],[ 9.0, 3.0,-63,0.60],
+    [ 8.0,-4.2,-66,0.45],[ 8.5, 1.8,-70,0.55],[ 7.5,-3.5,-75,0.60],[ 5.5, 3.4,-79,0.50],
+    // die letzten drei stehen so, dass sie am Seitenende zwischen Kontaktfoto,
+    // Fusszeile und Menueleiste hervorschauen statt dahinter zu verschwinden
+    [ 4.1,-3.4,-81,0.55],[11.0,-5.5,-87,0.50]
+  ];
+  for(var sw=0;sw<schwarmLage.length;sw++){
+    var L=schwarmLage[sw], se=makeEmpanada(L[3]);
+    se.position.set(L[0],L[1],L[2]);
+    se.userData.phase=sw*1.37;
+    se.userData.y0=L[1];
+    se.userData.tilt=((sw*7)%5-2)*0.14;          // feste Schraeglage je Stueck, wirkt hingelegt statt aufgereiht
+    se.userData.zu=L[0]<0?0.3:-0.3;               // leicht zur Bildmitte gedreht
+    schwarm.push(se); scene.add(se);
+  }
+
   /* ---------- Kamerapfad: Stationen entlang des Scrolls ---------- */
   // [scrollProgress, camX, camY, camZ, lookAtY]
   var path=[
@@ -2147,6 +2179,47 @@ if(typeof THREE==='undefined' || !(function(){try{var c=document.createElement('
     renderer.setSize(innerWidth,innerHeight);
   });
 
+  /* Hero-Empanada haengt an der Kamera (Bildpunkt sx,sy plus Abstand d), damit
+     die Kamerafahrt sie nicht ueberrollt. 0-4 %: atmet auf dem Hero-Platz. Dann
+     sinkt sie auf die Hoehe der Manifest-Ueberschrift, faehrt rechts daneben 1:1
+     mit dem Text nach oben, dreht sich dabei einmal ganz und geht bei "Con
+     pasion" oben raus - leicht beschleunigt und in die Tiefe, damit sie am Rand
+     nicht abreisst. Handy: neben dem Text ist kein Platz, also in die Luecke
+     zwischen Claim und Ueberschrift; beim Kreuzen des Claims taucht sie klein
+     in den Nebel. Anker kommen aus dem DOM, damit es bei jeder Fenstergroesse
+     neben der Ueberschrift landet. */
+  function heroFahrt(el){
+    function sm(a,b,x){ x=(x-a)/(b-a); x=x<0?0:x>1?1:x; return x*x*(3-2*x); }
+    function docY(n){ var y=0; while(n){ y+=n.offsetTop; n=n.offsetParent; } return y; }   // Layout-Position ohne .rv-Versatz
+    var t=scrollT, W=innerWidth, H=innerHeight, max=document.documentElement.scrollHeight-H;
+    hero.visible=t<0.26;
+    if(!hero.visible) return;
+    var f=heroFahrt;
+    if(!f.h2){ f.h2=document.querySelector('#manifest h2'); f.claim=document.querySelector('#hero .claim'); f.rg=document.createRange(); f.n=0; }
+    if(f.W!==W||f.H!==H||!(f.n++%30)){   // DOM nur alle 30 Bilder messen, Layout-Abfragen sind nicht gratis
+      f.W=W; f.H=H; f.rg.selectNodeContents(f.h2);
+      f.textR=f.rg.getBoundingClientRect().right; f.h2Top=docY(f.h2); f.h2H=f.h2.offsetHeight; f.claimB=docY(f.claim)+f.claim.offsetHeight;
+    }
+    var w=mobile?sm(0.02,0.07,t):sm(0.04,0.12,t);        // 0 = Hero-Platz, 1 = haengt am Text
+    var raus=mobile?sm(0.10,0.16,t):sm(0.15,0.23,t);     // Abgang oben
+    var dreh=mobile?sm(0.05,0.12,t):sm(0.07,0.17,t);     // eine volle Drehung um die Blickachse (um die Hochachse stuende sie zwischendurch als duenne Kante)
+    var ankerY=mobile?f.claimB+(f.h2Top-f.claimB)*0.56:f.h2Top+f.h2H/2-35;   // Dokument-Y des Ziels
+    var ankerX=mobile?W/2:f.textR+(W-f.textR)*0.6;
+    var leben=reduce?0:1-0.5*w;
+    var sx=(mobile?W/2:W*0.78-mx*90)*(1-w)+ankerX*w;
+    var sy=(H*(mobile?0.18:0.43)-my*55)*(1-w)+(ankerY-t*max)*w-raus*(mobile?120:220)+Math.sin(el*0.7)*(mobile?12:26)*leben;
+    var tauch=mobile?sm(0.012,0.028,t)*(1-sm(0.048,0.07,t))*28:0;   // Handy: klein und tief, waehrend der Claim vorbeizieht
+    var d=6.8+w*(mobile?0.8:1.7)+raus*3.5+tauch;
+    var upp=0.85*d/H;                                     // Welt-Einheiten pro Pixel bei FOV 46
+    var ox=(sx-W/2)*upp, oy=(H/2-sy)*upp;
+    camera.updateMatrixWorld();
+    hero.position.set(ox,oy,-d); camera.localToWorld(hero.position);
+    hero.rotation.y=camera.rotation.y-Math.atan2(ox,d)+(reduce?0:Math.sin(el*0.34)*0.35);   // Fotoseite zur Kamera
+    hero.rotation.x=0.10+(reduce?0:Math.sin(el*0.42)*0.10);
+    hero.rotation.z=-dreh*Math.PI*2+(reduce?0:Math.cos(el*0.29)*0.09);
+    hero.scale.setScalar((mobile?1.1:1.5)*(1+(reduce?0:Math.sin(el*1.6)*0.03*(1-0.6*w))));
+  }
+
   var clock=new THREE.Clock();
   function tick(){
     requestAnimationFrame(tick);
@@ -2167,16 +2240,22 @@ if(typeof THREE==='undefined' || !(function(){try{var c=document.createElement('
     // so lange bleibt er ganz aus dem Rendern heraus.
     ring.visible=(camera.position.z-ring.position.z)<38;
 
-    if(!reduce){
-      // Hero-Empanada: pendelt statt durchzudrehen -- sie soll immer
-      // als Empanada lesbar bleiben, nicht als Kante im Profil stehen.
-      hero.rotation.y=-0.42+Math.sin(el*0.34)*0.35+scrollT*1.4;   // -0.42 gleicht den Kameraversatz aus (Hero x=3), Fotoseite bleibt vorn
-      hero.rotation.x=0.10+Math.sin(el*0.42)*0.10;
-      hero.rotation.z=Math.cos(el*0.29)*0.09;
-      hero.position.y=(mobile?1.85:0.4)+Math.sin(el*0.7)*0.17;
-      // sie gehoert zum Hero und zieht beim Weiterscrollen seitlich aus dem Bild
-      hero.position.x=(mobile?0:2.6)+scrollT*(mobile?16:26);
+    heroFahrt(el);   // Position folgt dem Scroll auch bei reduce, nur Atmen/Pendeln haengt an !reduce
 
+    // Schwarm in der Tiefe: pendelt und schwebt; gerechnet wird nur, was
+    // vor der Kamera im Nebelfenster liegt (wie beim Ring)
+    for(var w=0;w<schwarm.length;w++){
+      var so=schwarm[w], sd=camera.position.z-so.position.z;
+      so.visible=sd>2&&sd<32;   // ab 32 laesst der Nebel unter 13 Prozent durch - unsichtbar, aber Dreiecke
+      if(!so.visible||reduce) continue;   // im Ruhemodus steht der Schwarm still, wird aber weiter gecullt
+      var wp=so.userData.phase;
+      so.rotation.y=so.userData.zu+Math.sin(el*0.26+wp)*0.55;   // pendeln, nie ins Profil
+      so.rotation.x=Math.sin(el*0.21+wp*1.3)*0.22;
+      so.rotation.z=so.userData.tilt+Math.cos(el*0.17+wp)*0.12;
+      so.position.y=so.userData.y0+Math.sin(el*0.45+wp)*0.35;
+    }
+
+    if(!reduce){
       for(var s=0;s<sidekicks.length;s++){
         var sk=sidekicks[s];
         sk.rotation.y=Math.sin(el*0.28+s*1.9)*0.45-0.45;   // pendeln, nie ins Profil
