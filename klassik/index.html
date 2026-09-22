@@ -200,16 +200,22 @@ p{font-size:clamp(16px,.35vw + 14px,18px);color:var(--text-dim);max-width:62ch;m
   animation:dolly 16s ease-in-out infinite alternate;
 }
 @keyframes dolly{from{transform:scale(1)}to{transform:scale(1.06)}}
+/* Der Schleier ist kein Geschmack, er ist die Lesbarkeit. Am Handy steht der
+   Text bei 37 bis 68 Prozent der Hoehe - der alte Verlauf war dort schon auf
+   12 Prozent Deckung abgefallen und legte die Eyebrow auf hellen Teig: 1,96:1
+   statt der geforderten 4,5:1. Die Stuetzpunkte tragen jetzt bis 88 Prozent.
+   Nachgemessen wird mit tests/klassik-hero-kontrast.mjs; wer hier Werte
+   herunterdreht, muss den Lauf erneut bestehen. */
 .hero-schleier{
   position:absolute;inset:0;z-index:1;
   background:
     linear-gradient(to bottom,rgba(15,10,7,.62) 0,transparent 180px),
-    linear-gradient(to top,rgba(15,10,7,.94) 0,rgba(15,10,7,.5) 40%,rgba(15,10,7,.12) 68%,transparent 100%);
+    linear-gradient(to top,rgba(15,10,7,.72) 0,rgba(15,10,7,.76) 26%,rgba(15,10,7,.75) 55%,rgba(15,10,7,.54) 72%,rgba(15,10,7,.14) 88%,transparent 100%);
 }
 @media(min-width:820px){
   .hero-schleier{background:
     linear-gradient(to bottom,rgba(15,10,7,.58) 0,transparent 190px),
-    linear-gradient(to right,rgba(15,10,7,.8) 0,rgba(15,10,7,.5) 36%,rgba(15,10,7,.05) 64%,transparent 100%),
+    linear-gradient(to right,rgba(15,10,7,.88) 0,rgba(15,10,7,.66) 38%,rgba(15,10,7,.1) 66%,transparent 100%),
     linear-gradient(to top,rgba(15,10,7,.75) 0,transparent 38%)}
 }
 /* Feines Korn ueber dem Foto: kaschiert Farbstufen in den dunklen Verlaeufen */
