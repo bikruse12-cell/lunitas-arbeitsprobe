@@ -82,9 +82,9 @@ a{color:inherit}
   transition:opacity .8s var(--ease-out),visibility .8s;
 }
 #boot.done{opacity:0;visibility:hidden}
-#boot .boot-logo{width:min(220px,50vw);opacity:0}
-#boot.schluss .boot-logo{animation:boot-in .55s var(--ease-out) forwards}
-@keyframes boot-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* Das Logo: siehe "Der Abspann" weiter unten. Hier steht nur, was es ohne
+   Vorspann ist - beim ersten Aufbau der Seite, bevor der Film beginnt. */
+#boot .boot-logo{opacity:0}
 
 /* ---------- Vorspann: der Film, bevor die Seite beginnt ----------
    Eine Empanada bricht auf, Kaese zieht Faeden, Dampf steigt aus der
@@ -106,14 +106,47 @@ a{color:inherit}
    steht mittig, es geht nichts Wichtiges verloren. */
 @media(max-width:819px){
   #boot .vorspann{width:96vw;aspect-ratio:1}
-  .vorspann .film{object-fit:cover}
 }
 #boot.spielt .vorspann{display:block}
 /* Waehrend der Film laeuft, ist der Vorhang REINES Schwarz. Der Film hat
    schwarzen Grund, der Vorhang sonst das waermere Dunkel der Seite - und
    dann stand der Film als deutlich sichtbares Rechteck darin. */
 #boot.spielt{background:#000}
-#boot .boot-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+/* ---------- Der Abspann ----------
+   Das Logo waechst ins Bild, WAEHREND die Empanada dahinter weiter
+   aufbricht - so endet ein Werbespot, nicht mit einem Schnitt.
+
+   Vorher erschien es erst, wenn der Film schon weggesunken war, und der
+   Vorhang fiel 420 ms spaeter: Die Einblendung dauerte 550 ms, war also
+   noch gar nicht zu Ende, als die Seite kam. Praktisch hat es niemand
+   gesehen. Dazu setzte die Einblendung `transform: translateY(8px)` und
+   ueberschrieb damit die Zentrierung `translate(-50%,-50%)` - das Logo
+   stand waehrenddessen nach rechts unten versetzt.
+
+   Jetzt haengt es am Fortschritt des Films (siehe logoStand() im Skript):
+   ab gut der Haelfte kommt es, waechst auf seine Groesse und tritt beim
+   Abgang noch einen Schritt vor. Wer zurueckscrollt, schiebt es wieder
+   hinaus - der Vorspann gehoert dem Besucher, auch an dieser Stelle. */
+#boot .boot-logo{
+  position:absolute;left:50%;top:50%;z-index:2;
+  width:min(320px,64vw);
+  transform:translate(-50%,-50%) scale(.74);
+  transition:opacity .85s var(--ease-out),transform 1.1s var(--ease-out);
+  /* Das Logo steht auf der hellsten Stelle des Films: Kaese und Dampf sind
+     dort fast weiss, und die rote Unterzeile "Empanadas con pasion" ging
+     darin unter. Drei Lagen Schlagschatten ohne Versatz legen einen weichen
+     dunklen Hof um die Buchstaben, statt den Film ueberall abzudunkeln. */
+  filter:drop-shadow(0 0 14px rgba(0,0,0,.95)) drop-shadow(0 0 34px rgba(0,0,0,.9))
+         drop-shadow(0 0 64px rgba(0,0,0,.75)) drop-shadow(0 6px 22px rgba(0,0,0,.8));
+}
+#boot.logo .boot-logo{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#boot.schluss .boot-logo{opacity:1;transform:translate(-50%,-50%) scale(1.07)}
+/* Waehrend das Logo steht, tritt der Film einen Schritt zurueck: etwas
+   dunkler und minimal kleiner, damit das Wort vorne steht. */
+#boot.logo .vorspann{filter:brightness(.6);transform:scale(.97);transition:filter .9s var(--ease-out),transform .9s var(--ease-out)}
+/* Am Handy fuellt der Film die ganze Buehne und das Logo nimmt zwei Drittel
+   ihrer Breite - dort waere es zu gross und deckte die Empanada zu. */
+@media(max-width:819px){ #boot .boot-logo{width:min(320px,54vw)} }
 /* Waehrend der Vorspann laeuft, scrollt die Seite dahinter nicht weg. Die
    Klasse setzt das Skript - faellt es aus, bleibt die Seite normal bedienbar. */
 html.vorspann-laeuft{overflow:hidden}
@@ -124,6 +157,16 @@ html.vorspann-laeuft{overflow:hidden}
   width:100%;height:100%;object-fit:contain;display:block;
   background:transparent;
   animation:film-auf .45s var(--ease-out) both;
+}
+/* Diese Regel stand bisher weiter oben im Handy-Block - also VOR der Zeile
+   darueber, bei gleicher Staerke. Damit gewann `contain`, und am Handy stand
+   der Film als flacher 16:9-Streifen in einer quadratischen Buehne: die
+   Empanada halb so gross wie gedacht, oben und unten schwarze Balken. Die
+   README beschrieb die ganze Zeit, was hier gemeint war und nicht ankam.
+   Jetzt steht sie danach und greift: Der Film fuellt die Buehne und wird
+   seitlich beschnitten - die Empanada steht mittig, es geht nichts verloren. */
+@media(max-width:819px){
+  .vorspann .film{object-fit:cover}
 }
 @keyframes film-auf{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 /* Am Ende sinkt er weg, damit der Uebergang zur Seite nicht abreisst. */
@@ -811,7 +854,7 @@ footer .flag i:nth-child(3){background:var(--chili-deep)}
   .hero-bild img,.hero-text,.band-lauf,#boot img{animation:none}
   /* Kein Vorspann bei "weniger Bewegung": das Skript ueberspringt ihn, und
      falls er doch im Bild steht, bewegt sich nichts. Das Logo steht sofort. */
-  #boot .boot-logo{opacity:1}
+  #boot .boot-logo{opacity:1;transform:translate(-50%,-50%);transition:none}
   #boot .vorspann,#boot .vorspann-hinweis{display:none !important}
   .rahmen img,.item,.item .foto::before,.sauce,.sauce .bild,.chip,.btn,.rechner-mond .fuell{transition:none}
   #cartbtn.bump{animation:none}
@@ -1799,6 +1842,10 @@ var boot=document.getElementById('boot'), heroImg=document.querySelector('#hero 
    einem Standbild sitzen zu lassen ist der teuerste Fehler, den ein
    Vorspann machen kann. Wer schon gescrollt hat, schaut zu und darf kurz
    innehalten, ohne dass ihm der Film aus der Hand genommen wird. */
+/* Ab gut der Haelfte des Films waechst das Logo ins Bild, waehrend die
+   Empanada dahinter weiter aufbricht. Frueher waere sie noch zu, spaeter
+   bliebe zu wenig Zeit, es stehen zu sehen. */
+var LOGO_AB=.52;
 var WEG=760, WARTEN_ERST=1800, WARTEN_DANN=3000,
     ziel=0, ist=0, dauer=0, scrubt=false, geregt=false, sucht=false,
     ruheUhr=0, bild=0, gesten=[];
@@ -1857,6 +1904,11 @@ function scrubben(film){
     if(scrubt||fertig||!isFinite(film.duration)||film.duration<=0) return;
     dauer=film.duration; scrubt=true;
     film.addEventListener('seeked',function(){ sucht=false; });
+    /* Beim Scrubben ruft die Schleife logoStand() auf; laeuft der Film von
+       selbst (beide Netze), meldet er seinen Stand hierueber. */
+    film.addEventListener('timeupdate',function(){
+      if(dauer>0) logoStand(film.currentTime/dauer);
+    });
     boot.classList.add('scrubbt');
     ruheStellen(film);
     schleife(film);
@@ -1886,7 +1938,7 @@ function schleife(film){
   if(!scrubt||fertig) return;
   ist+=(ziel-ist)*.16;
   if(Math.abs(ziel-ist)<.001) ist=ziel;
-  zeigen(film);
+  zeigen(film); logoStand(ist);
   if(ziel>=.99&&ist>=.985){ stille(); schluss(); return; }
   bild=requestAnimationFrame(function(){ schleife(film); });
 }
@@ -1925,6 +1977,13 @@ function zeigen(film){
   }
 }
 
+/* Das Logo folgt dem Fortschritt - vorwaerts kommt es, rueckwaerts geht es
+   wieder. Ein toggle statt add, damit man auch an dieser Stelle mit dem
+   Vorspann spielen kann. */
+function logoStand(anteil){
+  if(!fertig) boot.classList.toggle('logo',anteil>=LOGO_AB);
+}
+
 /* Solange etwas passiert, wird die Uhr zurueckgestellt. */
 function ruheStellen(film){
   clearTimeout(ruheUhr);
@@ -1949,11 +2008,14 @@ function abspielen(film){
   uhren.push(setTimeout(schluss,Math.max(900,rest)));
 }
 
-/* Abgang: der Film sinkt weg, dann hebt sich der Vorhang. */
+/* Abgang: der Film sinkt weg, das Logo bleibt stehen und tritt noch einen
+   Schritt vor - erst dann hebt sich der Vorhang. Die 420 ms von frueher
+   reichten dafuer nicht: Die Einblendung des Logos war noch nicht zu Ende,
+   als die Seite schon kam. */
 function schluss(){
   if(fertig) return;
-  boot.classList.add('schluss');
-  uhren.push(setTimeout(bereit,420));
+  boot.classList.add('logo','schluss');
+  uhren.push(setTimeout(bereit,820));
 }
 
 if(heroImg&&heroImg.decode){ heroImg.decode().then(vorspann,vorspann); }
