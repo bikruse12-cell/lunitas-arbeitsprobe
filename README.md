@@ -1,14 +1,16 @@
-# Lunitas Empanadas — Arbeitsprobe
+# Lunitas Empanadas — Arbeitsproben
 
-Relaunch-Entwurf für lunitas.de als 3D-Scroll-Seite mit vollem
-Bestellvorgang. Eine einzige HTML-Datei, kein Server, keine Abhängigkeit
-von fremden Diensten: Bilder, Ton, 3D-Modell und die 3D-Bibliothek
-stecken alle in der Datei.
+Relaunch-Entwurf für lunitas.de in zwei Fassungen. Jede ist eine einzige
+HTML-Datei ohne Server: Bilder, Ton, 3D-Modell und Bibliotheken stecken in
+der Datei.
 
-**Ansehen:** https://bikruse12-cell.github.io/lunitas-arbeitsprobe/
+| Fassung | Ansehen |
+|---|---|
+| **Scrollworld**: 3D-Scroll-Welt mit fotografierter Empanada, Dampf und Bestellablauf | https://bikruse12-cell.github.io/lunitas-arbeitsprobe/ |
+| **Klassik**: ruhiger Aufbau, dunkler Hero mit langsamem Dolly-Zoom, danach hell und warm, mit Sorten-Filter, Versandkosten-Rechner, Karte und Foodtruck-Anfrage | https://bikruse12-cell.github.io/lunitas-arbeitsprobe/klassik/ |
 
-Dieses Repo enthält nur das fertige Ergebnis. Quelltext, Bauskripte und
+Dieses Repo enthält nur die fertigen Ergebnisse. Quelltext, Bauskripte und
 Prüfläufe liegen im Arbeits-Repo.
 
-Die Seite ist auf `noindex` gesetzt — sie soll über den Link erreichbar
-sein, aber nicht in Suchergebnissen neben der echten Seite stehen.
+Beide Seiten sind auf `noindex` gesetzt: über den Link erreichbar, aber nicht
+in Suchergebnissen neben der echten Seite.
