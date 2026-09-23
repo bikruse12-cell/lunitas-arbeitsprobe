@@ -374,6 +374,26 @@ p{font-size:clamp(16px,.35vw + 14px,18px);color:var(--text-dim);max-width:62ch;m
    editorial macht statt laut. Der Kursivschnitt kommt ueber die
    ital-Achse im Fonts-Link, siehe oben im head. */
 #hero h1 em{font-style:italic;font-weight:400;color:var(--gold);font-variation-settings:'SOFT' 100,'opsz' 144}
+/* Die Buchstaben der Zeile als eigene Kaestchen, damit sie der Maus
+   ausweichen koennen (siehe Skript, "die Buchstaben weichen der Maus aus").
+   Woerter bleiben zusammen, sonst braeche die Zeile mitten im Wort um.
+   Ohne Maus (Handy) bleibt die Zeile schlichter Text. */
+#hero h1 .hw{display:inline-block;white-space:nowrap}
+/* Kein will-change: 34 eigene Ebenen kosteten im Messlauf 20 Bilder je
+   Sekunde. Ohne zeichnet der Browser die Zeile beim Ausweichen einfach neu,
+   und das ist bei 30 Buchstaben billig. */
+#hero h1 .hb{display:inline-block}
+/* Ankunft: sobald der Vorhang faellt, setzen sich Eyebrow, Zeile, Lead,
+   Tasten und Leiste nacheinander - 14 px von unten, weich. Das fuehrt das
+   Auge in der Lesereihenfolge. Solange die Seite laedt (html.lade), stehen
+   sie unsichtbar bereit - dieselbe Bedingung wie der Vorhang selbst. */
+html.lade .hero-text>*,html.lade .vorteile{opacity:0}
+html.bereit .hero-text>*,html.bereit .vorteile{animation:ankunft .75s var(--ease-out) both}
+html.bereit .hero-text>:nth-child(2){animation-delay:.08s}
+html.bereit .hero-text>:nth-child(3){animation-delay:.16s}
+html.bereit .hero-text>:nth-child(4){animation-delay:.24s}
+html.bereit .vorteile{animation-delay:.36s}
+@keyframes ankunft{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 /* Weiss statt gedaempft, 400 statt 300: duenne graue Schrift auf einem
    Foto ist das, was man "verschwimmt" nennt. */
 #hero .lead{
@@ -409,7 +429,7 @@ p{font-size:clamp(16px,.35vw + 14px,18px);color:var(--text-dim);max-width:62ch;m
    nicht noch einmal in Versalien: davon hat der Hero schon genug. */
 .vorteile{
   position:relative;z-index:4;list-style:none;padding:0;
-  margin:0 auto calc(clamp(48px,9vw,120px) + 26px);width:100%;max-width:1240px;
+  margin:0 auto clamp(40px,6vw,64px);width:100%;max-width:1240px;
   display:grid;grid-template-columns:repeat(4,1fr);
   background:rgba(15,10,7,.58);border:1px solid rgba(246,237,225,.13);border-radius:var(--r-m);
   -webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2);
@@ -425,7 +445,7 @@ p{font-size:clamp(16px,.35vw + 14px,18px);color:var(--text-dim);max-width:62ch;m
   .vorteile li:nth-child(n+3){border-top:1px solid rgba(246,237,225,.11)}
 }
 @media(max-width:819px){
-  .vorteile{margin-bottom:calc(clamp(48px,9vw,120px) + 18px)}
+  .vorteile{margin-bottom:34px}
   .vorteile li{padding:15px 16px;gap:11px}
   .vorteile .ico{width:22px;height:22px}
   .vorteile b{font-size:15px}
@@ -439,11 +459,9 @@ p{font-size:clamp(16px,.35vw + 14px,18px);color:var(--text-dim);max-width:62ch;m
   .vorteile li{align-items:center;padding:14px 16px}
   .vorteile b{margin:0}
 }
-/* Die Halbmond-Kante: hier wird aus der Nacht Papier */
-.bogen{position:absolute;left:-6%;right:-6%;bottom:-1px;height:clamp(48px,9vw,120px);background:var(--paper);border-radius:100% 100% 0 0 / 100% 100% 0 0;z-index:3}
 
 /* ---------- Manifest ---------- */
-#manifest{background:var(--paper);padding-top:calc(var(--sec) * .7)}
+#manifest{background:var(--paper);padding-top:var(--sec)}
 .saeulen{list-style:none;margin:0;padding:0;display:grid;gap:26px}
 .saeulen li{border-top:1px solid var(--gold-deep);padding-top:18px}
 .saeulen p{margin:0;font-size:16px}
@@ -620,13 +638,21 @@ p{font-size:clamp(16px,.35vw + 14px,18px);color:var(--text-dim);max-width:62ch;m
 .karte.offen .karte-platz{opacity:0;pointer-events:none}
 .karte-status{font-size:13px;color:var(--chili-deep);margin:0;min-height:1.2em;max-width:none}
 
-/* ---------- Fusszeile ---------- */
+/* ---------- Fusszeile ----------
+   Der Halbmond, der bis zum 23.09. den Hero nach unten abschloss, sitzt
+   jetzt hier: Das Papier taucht als Bogen in die dunkle Fusszeile. MAX fand
+   ihn im Hero stoerend ("macht die Hero kaputt"), wollte die Form aber
+   irgendwo behalten. Als Schlussklammer der Seite stoert er nichts, und die
+   eine Form der Seite bleibt bis zum Ende im Bild. */
 footer{
+  position:relative;overflow:hidden;
   background:var(--ink);color:var(--creme-faint);
-  padding:40px var(--pad) calc(40px + env(safe-area-inset-bottom));
+  padding:calc(40px + clamp(40px,7vw,96px)) var(--pad) calc(40px + env(safe-area-inset-bottom));
   display:flex;flex-wrap:wrap;gap:18px 34px;align-items:center;justify-content:space-between;
   font-size:12px;letter-spacing:.14em;text-transform:uppercase;
 }
+footer>*{position:relative;z-index:1}
+.bogen{position:absolute;left:-6%;right:-6%;top:-1px;height:clamp(40px,7vw,96px);background:var(--paper-2);border-radius:0 0 100% 100% / 0 0 100% 100%;z-index:0}
 footer a{text-decoration:none;transition:color .3s}
 @media(hover:hover) and (pointer:fine){footer a:hover{color:var(--gold)}}
 footer .flag{display:inline-flex;height:11px;width:26px;border-radius:2px;overflow:hidden;vertical-align:-1px;margin-right:9px}
@@ -948,6 +974,8 @@ footer .flag i:nth-child(3){background:var(--chili-deep)}
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;transition:none}
   .hero-bild img,.hero-text,.band-lauf,#boot img{animation:none}
+  .hero-text>*,.vorteile{animation:none}
+  #hero h1 .hb{transform:none !important}
   /* Kein Vorspann bei "weniger Bewegung": das Skript ueberspringt ihn, und
      falls er doch im Bild steht, bewegt sich nichts. Das Logo steht sofort. */
   #boot .boot-logo{opacity:1;transform:translate(-50%,-50%);transition:none}
@@ -1046,6 +1074,9 @@ footer .flag i:nth-child(3){background:var(--chili-deep)}
 </div>
 
 <main>
+  <!-- Fuehler fuer die Kopfleiste: liegt 56 px unter der Oberkante; ist er
+       aus dem Bild, ist gescrollt worden und die Leiste wird dunkel. -->
+  <div id="fuehler" aria-hidden="true" style="position:absolute;top:56px;left:0;width:1px;height:1px;pointer-events:none"></div>
 
   <!-- ============ HERO ============ -->
   <section id="hero">
@@ -1079,7 +1110,6 @@ footer .flag i:nth-child(3){background:var(--chili-deep)}
       <li><svg class="ico"><use href="#i-kalt"/></svg><div><b>Gek&uuml;hlter Versand</b><p>Per &Uuml;bernachtexpress, ab 70 &euro; versandkostenfrei.</p></div></li>
       <li><svg class="ico"><use href="#i-truck"/></svg><div><b>Foodtruck</b><p>F&uuml;r Veranstaltungen und private Feiern.</p></div></li>
     </ul>
-    <div class="bogen" aria-hidden="true"></div>
   </section>
 
   <!-- ============ MANIFEST ============ -->
@@ -1443,6 +1473,7 @@ footer .flag i:nth-child(3){background:var(--chili-deep)}
 </aside>
 
 <footer>
+  <div class="bogen" aria-hidden="true"></div>
   <div><span class="flag"><i></i><i></i><i></i></span>Lunitas, Empanadas con pasi&oacute;n</div>
   <div>Inh. Tanja Quarz</div>
   <div>
@@ -2172,13 +2203,20 @@ var io=new IntersectionObserver(function(es){
 },{threshold:.14,rootMargin:'0px 0px -8% 0px'});
 alle('.rv',function(el){ io.observe(el); });
 
-/* ---------- Kopfleiste: dunkel, sobald der Hero aus dem Bild ist ---------- */
-var nav=document.getElementById('nav'), hero=document.getElementById('hero'), theme=document.querySelector('meta[name=theme-color]');
+/* ---------- Kopfleiste: dunkel, sobald gescrollt wird ----------
+   Vorher wurde sie erst dunkel, wenn der Hero ganz aus dem Bild war - auf
+   dem Weg dorthin schob sich das Logo durchsichtig ueber die Zeile. Jetzt
+   haengt sie an einem Fuehler 56 px unter der Oberkante der Seite: sobald
+   der aus dem Bild ist, bekommt sie ihren Grund. Die Farbe der
+   Browserleiste (theme-color) folgt weiter dem Hero. */
+var nav=document.getElementById('nav'), hero=document.getElementById('hero'), theme=document.querySelector('meta[name=theme-color]'),
+    fuehler=document.getElementById('fuehler');
 new IntersectionObserver(function(es){
-  var drin=es[0].isIntersecting;
-  nav.classList.toggle('fest',!drin);
-  if(theme){ theme.setAttribute('content',drin?'#0F0A07':'#EFE2CF'); }
+  if(theme){ theme.setAttribute('content',es[0].isIntersecting?'#0F0A07':'#EFE2CF'); }
 },{threshold:0,rootMargin:'-72px 0px 0px 0px'}).observe(hero);
+new IntersectionObserver(function(es){
+  nav.classList.toggle('fest',!es[0].isIntersecting);
+},{threshold:0}).observe(fuehler||hero);
 
 /* ---------- Menue am Handy ---------- */
 var mb=document.getElementById('menubtn');
@@ -2203,6 +2241,67 @@ if(!SANFT&&matchMedia('(hover:hover) and (pointer:fine)').matches){
     tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2;
     if(!laeuft){ laeuft=true; requestAnimationFrame(schritt); }
   },{passive:true});
+}
+
+/* ---------- Hero: die Buchstaben weichen der Maus aus ----------
+   MAX: "wenn man mit der Maus rueberfaehrt, sollen die Buchstaben so hoch
+   huepfen, nicht springen ... die wollen nicht von der Maus angefasst
+   werden." Jeder Buchstabe der Zeile wird ein eigenes Kaestchen. Kommt der
+   Zeiger naeher als RADIUS, hebt sich der Buchstabe (bis HUB Pixel, je
+   naeher, desto mehr) und rueckt ein Stueck vom Zeiger weg. Die Bewegung
+   zieht weich nach, damit nichts ruckt, und laeuft nur, solange sich
+   etwas bewegt. Nur mit Maus, nie bei "weniger Bewegung". Die Lage jedes
+   Buchstabens wird beim Betreten des Hero gemessen, nicht in jedem Bild -
+   sonst muesste der Browser 30 Kaestchen je Bild neu ausmessen. */
+if(!SANFT&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+  var zeile=document.querySelector('#hero h1'), heroEl=document.getElementById('hero');
+  if(zeile&&heroEl){
+    /* Fuer Vorleser bleibt die Zeile ein Satz: der Name steht am h1, die
+       Kaestchen sind fuer sie unsichtbar. */
+    zeile.setAttribute('aria-label',zeile.textContent.replace(/\s+/g,' ').trim());
+    var bst=[];
+    (function zerlegen(kn){
+      Array.prototype.slice.call(kn.childNodes).forEach(function(k){
+        if(k.nodeType===3){
+          var frag=document.createDocumentFragment(), wort=null;
+          k.textContent.split('').forEach(function(z){
+            if(/\s/.test(z)){ wort=null; frag.appendChild(document.createTextNode(z)); return; }
+            if(!wort){ wort=document.createElement('span'); wort.className='hw'; wort.setAttribute('aria-hidden','true'); frag.appendChild(wort); }
+            var b=document.createElement('span'); b.className='hb'; b.textContent=z; wort.appendChild(b);
+            bst.push({el:b,cx:0,cy:0,x:0,y:0,zx:0,zy:0});
+          });
+          kn.replaceChild(frag,k);
+        } else if(k.nodeType===1&&k.tagName!=='BR'){ zerlegen(k); }
+      });
+    })(zeile);
+
+    var RADIUS=150, HUB=18, mx=-1e5, my=-1e5, tick=false;
+    function messen(){
+      bst.forEach(function(b){
+        var r=b.el.getBoundingClientRect();
+        b.cx=r.left+r.width/2+scrollX-b.x; b.cy=r.top+r.height/2+scrollY-b.y;
+      });
+    }
+    function schritt2(){
+      var ruhe=true;
+      bst.forEach(function(b){
+        var dx=b.cx-mx, dy=b.cy-my, d=Math.sqrt(dx*dx+dy*dy);
+        if(d<RADIUS){
+          var s=1-d/RADIUS; s*=s; var n=d||1;
+          b.zx=dx/n*s*10; b.zy=-s*HUB+dy/n*s*5;
+        } else { b.zx=0; b.zy=0; }
+        b.x+=(b.zx-b.x)*.14; b.y+=(b.zy-b.y)*.14;
+        if(Math.abs(b.zx-b.x)>.05||Math.abs(b.zy-b.y)>.05){ ruhe=false; } else { b.x=b.zx; b.y=b.zy; }
+        b.el.style.transform=(b.x||b.y)?'translate('+b.x.toFixed(2)+'px,'+b.y.toFixed(2)+'px)':'';
+      });
+      if(ruhe){ tick=false; } else { requestAnimationFrame(schritt2); }
+    }
+    function anstossen(){ if(!tick){ tick=true; requestAnimationFrame(schritt2); } }
+    heroEl.addEventListener('pointerenter',messen);
+    addEventListener('resize',messen);
+    heroEl.addEventListener('pointermove',function(e){ mx=e.pageX; my=e.pageY; anstossen(); },{passive:true});
+    heroEl.addEventListener('pointerleave',function(){ mx=-1e5; my=-1e5; anstossen(); });
+  }
 }
 
 /* ---------- Widget 1: Sorten-Filter ---------- */
