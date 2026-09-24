@@ -484,9 +484,22 @@ html.bereit .vorteile{animation-delay:.36s}
 .saeulen p{margin:0;font-size:16px}
 
 /* ---------- Laufband ---------- */
-/* Einziges Laufband der Seite; nur Saetze der alten Seite. */
+/* Einziges Laufband der Seite; nur Saetze der alten Seite.
+   Zwei gleiche Haelften (.band-teil), und der Lauf wandert genau eine
+   Haelfte weit: Dann steht die zweite dort, wo die erste begann, und der
+   Neubeginn faellt nicht auf. Das traegt nur, solange EINE Haelfte breiter
+   ist als der Bildschirm. Bis zum 24.09. trug eine Haelfte die vier Saetze
+   einmal, 1174 px - auf jedem Rechner-Schirm lief der Text am Ende eines
+   Umlaufs aus, und rechts stand nur noch Gelb (MAX hat es gesehen). Jetzt
+   stehen sie viermal darin, rund 4800 px, breiter als ein 4K-Schirm.
+   Der Abstand nach dem letzten Zeichen steckt als padding IN der Haelfte,
+   nicht als gap zwischen den Haelften: sonst waeren -50 % nicht genau eine
+   Haelfte, und der Text ruckte bei jedem Neubeginn um 22 px. Viermal so
+   langer Weg heisst viermal so lange Laufzeit, sonst liefe er schneller:
+   245 s ergeben dieselben 19,6 px je Sekunde wie vorher 60 s. */
 #band{background:var(--gold);color:#1A1206;overflow:hidden;padding:15px 0}
-.band-lauf{display:flex;align-items:center;gap:44px;width:max-content;font-family:var(--display);font-style:italic;font-size:clamp(17px,1.6vw,23px);animation:lauf 60s linear infinite;font-variation-settings:'SOFT' 40}
+.band-lauf{display:flex;width:max-content;font-family:var(--display);font-style:italic;font-size:clamp(17px,1.6vw,23px);animation:lauf 245s linear infinite;font-variation-settings:'SOFT' 40}
+.band-teil{display:flex;align-items:center;gap:44px;padding-right:44px;flex:none}
 .band-lauf span{white-space:nowrap}
 .band-lauf i{width:11px;height:11px;border-radius:50%;box-shadow:inset 4px -3px 0 0 currentColor;flex:none}
 @keyframes lauf{to{transform:translateX(-50%)}}
@@ -1158,11 +1171,23 @@ footer .flag i:nth-child(3){background:var(--chili-deep)}
     </div>
   </section>
 
-  <!-- ============ LAUFBAND ============ -->
+  <!-- ============ LAUFBAND ============
+       Zwei gleiche Haelften mit je viermal denselben vier Saetzen. Warum
+       viermal, steht im CSS unter "Laufband". -->
   <div id="band" aria-hidden="true">
     <div class="band-lauf">
-      <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
-      <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+      <div class="band-teil">
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+      </div>
+      <div class="band-teil">
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+        <span>Empanadas con pasi&oacute;n</span><i></i><span>Handgemachte Empanadas</span><i></i><span>Familienrezept</span><i></i><span>T&auml;glich frisch</span><i></i>
+      </div>
     </div>
   </div>
 
