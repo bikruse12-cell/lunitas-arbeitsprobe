@@ -416,9 +416,23 @@ html.bereit .vorteile{animation-delay:.36s}
   #hero h1{margin-bottom:20px}
   #hero .lead{margin-bottom:28px}
 }
-/* Auf 360 px bricht "Duesseldorf Derendorf, seit 2017" sonst hinter dem
-   Halbmond um - enger gesperrt passt die Zeile in eine. */
-@media(max-width:380px){ #hero .eyebrow{font-size:11px;letter-spacing:.2em} }
+/* "Duesseldorf Derendorf, seit 2017" muss auf schmalen Schirmen in EINE
+   Zeile passen, sonst haengt die Haelfte unter dem Halbmond. Erst stand
+   hier 11px/.2em - und 11 px sind zu klein: tests/klassik-handy.mjs laesst
+   nichts unter 11,5 px durch, und das ist die Zeile, die sagt, wo der Laden
+   steht. Nachgemessen, was der Text bei welcher Sperrung braucht (verfuegbar
+   sind 256 px auf einem 320er Schirm, 296 px auf einem 360er):
+
+     12px/.20em   278px   bricht auf 320 um
+     12px/.14em   256px   bricht auf 320 um
+     12px/.12em   249px   +7 px - zu knapp, ohne Google Fonts greift eine
+                          andere Schrift und die kann breiter bauen
+     12px/.10em   241px   +15 px auf 320, +55 px auf 360
+
+   Also 12 px und enger gesperrt statt kleiner. Der Hero verliert damit ein
+   wenig Sperrung, aber nur unter 380 px, und dort faellt sie ohnehin kaum
+   auf - lesbar sein muss die Zeile. */
+@media(max-width:380px){ #hero .eyebrow{font-size:12px;letter-spacing:.1em} }
 
 /* ---------- Vorteile-Leiste ----------
    Vier Dinge, die die alte Seite ohnehin sagt, unten im Hero auf einen
