@@ -966,7 +966,10 @@ html:has(#anfrage[open]){overflow:hidden}
   .anf-chips label:hover{border-color:rgba(252,204,12,.5);color:var(--creme)}
   .anf-kopie:hover{color:var(--gold)}
 }
-.anf-status{font-size:13px;line-height:1.5;margin:0;color:var(--creme-dim);max-width:none;white-space:pre-wrap}
+/* Normale Schreibung: Die Fusszeile des Fensters ist ein <footer> und erbt
+   sonst die Versalien der Seiten-Fusszeile - ein ganzer Satz in Versalien
+   liest sich schlecht, gerade der Hinweis mit der Adresse. */
+.anf-status{font-size:13px;line-height:1.5;margin:0;color:var(--creme-dim);max-width:none;white-space:pre-wrap;text-transform:none;letter-spacing:normal}
 @media(max-width:560px){
   #anfrage{width:100vw;max-width:100vw;max-height:92svh;margin:auto 0 0;border-radius:16px 16px 0 0;border-bottom:0}
   .anf-kopf{padding:20px 20px 14px}
@@ -1359,8 +1362,8 @@ html:has(#anfrage[open]){overflow:hidden}
       <h2 class="rv d1" data-en='Get in touch.' data-es='Escr&iacute;benos.'>Sag uns Bescheid.</h2>
       <div class="contact-grid">
         <div>
-          <div class="ct rv d1"><div class="k" data-en='Events &amp; catering' data-es='Eventos y catering'>Events &amp; Catering</div><a href="mailto:events@lunitas.de">events@lunitas.de</a></div>
-          <div class="ct rv d2"><div class="k" data-en='Orders &amp; questions' data-es='Pedidos y preguntas'>Bestellung &amp; Fragen</div><a href="mailto:info@lunitas.de">info@lunitas.de</a></div>
+          <div class="ct rv d1"><div class="k" data-en='Events &amp; catering' data-es='Eventos y catering'>Events &amp; Catering</div><a href="mailto:events@lunitas.de" data-anfrage="catering">events@lunitas.de</a></div>
+          <div class="ct rv d2"><div class="k" data-en='Orders &amp; questions' data-es='Pedidos y preguntas'>Bestellung &amp; Fragen</div><a href="mailto:info@lunitas.de" data-anfrage="frage">info@lunitas.de</a></div>
           <div class="ct rv d2"><div class="k" data-en='Shipping' data-es='Env&iacute;o'>Versand</div><span data-en='Germany and EU &middot; 2 to 5 working days' data-es='Alemania y UE &middot; de 2 a 5 d&iacute;as laborables'>Deutschland und EU &middot; 2 bis 5 Werktage</span></div>
           <div class="ct rv d3"><div class="k" data-en='Large orders' data-es='Pedidos grandes'>Gro&szlig;bestellung</div><span data-en='from 100 empanadas on request' data-es='desde 100 empanadas, bajo consulta'>ab 100 Empanadas auf Anfrage</span></div>
           <div class="ct rv d3"><div class="k" data-en='Enquiries' data-es='Consultas'>Anfrage</div><span data-en='Occasion, date, place and number of guests are all we need' data-es='Nos basta con la ocasi&oacute;n, la fecha, el lugar y el n&uacute;mero de personas'>Anlass, Datum, Ort und Personenzahl gen&uuml;gen</span></div>
@@ -1509,18 +1512,18 @@ html:has(#anfrage[open]){overflow:hidden}
         data-whatsapp=""
         data-gruss="Guten Tag,"
         data-dank="Vielen Dank!"
-        data-hinweis-mail="Dein Mailprogramm &ouml;ffnet sich mit der fertigen Anfrage."
+        data-hinweis-mail="Dein Mailprogramm &ouml;ffnet sich mit der fertigen Anfrage. &Ouml;ffnet sich nichts: Text kopieren und an {an} schicken."
         data-hinweis-wa="WhatsApp &ouml;ffnet sich mit der fertigen Nachricht."
-        data-kopiert="Text kopiert. Du kannst ihn in jede Mail oder Nachricht einf&uuml;gen."
+        data-kopiert="Text kopiert. Schick ihn an {an} oder f&uuml;ge ihn in jede Nachricht ein."
         data-tr="data-gruss data-dank data-hinweis-mail data-hinweis-wa data-kopiert"
         data-en-gruss="Hello," data-es-gruss="Hola,"
         data-en-dank="Many thanks!" data-es-dank="&iexcl;Muchas gracias!"
-        data-en-hinweis-mail="Your email program opens with the finished enquiry."
-        data-es-hinweis-mail="Se abre tu programa de correo con la consulta lista."
+        data-en-hinweis-mail="Your email program opens with the finished enquiry. If nothing opens: copy the text and send it to {an}."
+        data-es-hinweis-mail="Se abre tu programa de correo con la consulta lista. Si no se abre nada: copia el texto y env&iacute;alo a {an}."
         data-en-hinweis-wa="WhatsApp opens with the finished message."
         data-es-hinweis-wa="Se abre WhatsApp con el mensaje listo."
-        data-en-kopiert="Text copied. You can paste it into any email or message."
-        data-es-kopiert="Texto copiado. Puedes pegarlo en cualquier correo o mensaje.">
+        data-en-kopiert="Text copied. Send it to {an} or paste it into any message."
+        data-es-kopiert="Texto copiado. Env&iacute;alo a {an} o p&eacute;galo en cualquier mensaje.">
   <div class="anf-art" hidden data-art="catering" data-titel="Catering anfragen"
        data-an="events@lunitas.de" data-thema="Anfrage Catering" data-einleitung="wir m&ouml;chten ein Catering anfragen."
        data-tr="data-titel data-thema data-einleitung"
@@ -1536,11 +1539,19 @@ html:has(#anfrage[open]){overflow:hidden}
        data-tr="data-titel data-thema data-einleitung"
        data-en-titel="Request a large order" data-en-thema="Large order from 100 empanadas" data-en-einleitung="I would like to request a large order."
        data-es-titel="Solicitar pedido grande" data-es-thema="Pedido grande desde 100 empanadas" data-es-einleitung="quiero solicitar un pedido grande."></div>
+  <!-- Seit 30.09. spaet: info@ im Kontakt oeffnet dieses Fenster. Als
+       schlichter Mail-Link passierte am Rechner ohne Mailprogramm nichts. -->
+  <div class="anf-art" hidden data-art="frage" data-titel="Frage stellen"
+       data-an="info@lunitas.de" data-thema="Frage an Lunitas" data-einleitung="ich habe eine Frage:"
+       data-tr="data-titel data-thema data-einleitung"
+       data-en-titel="Ask a question" data-en-thema="Question for Lunitas" data-en-einleitung="I have a question:"
+       data-es-titel="Hacer una pregunta" data-es-thema="Pregunta para Lunitas" data-es-einleitung="tengo una pregunta:"></div>
   <form novalidate>
     <header class="anf-kopf">
       <div>
         <h3 id="anf-titel">Anfrage</h3>
-        <p data-en='Tap what fits and add whatever is missing. The message is then ready, you just send it.' data-es='Toca lo que corresponda y a&ntilde;ade lo que falte. El mensaje queda listo, solo tienes que enviarlo.'>Tipp an, was passt, und schreib dazu, was noch fehlt. Die Nachricht ist danach fertig, du schickst sie nur noch ab.</p>
+        <p data-nur="catering foodtruck gross" data-en='Tap what fits and add whatever is missing. The message is then ready, you just send it.' data-es='Toca lo que corresponda y a&ntilde;ade lo que falte. El mensaje queda listo, solo tienes que enviarlo.'>Tipp an, was passt, und schreib dazu, was noch fehlt. Die Nachricht ist danach fertig, du schickst sie nur noch ab.</p>
+        <p data-nur="frage" data-en='Write your question, the message is then ready, you just send it.' data-es='Escribe tu pregunta, el mensaje queda listo, solo tienes que enviarlo.'>Schreib deine Frage, die Nachricht ist danach fertig, du schickst sie nur noch ab.</p>
       </div>
       <button class="x" type="button" aria-label="Schlie&szlig;en" data-tr="aria-label" data-en-aria-label="Close" data-es-aria-label="Cerrar"></button>
     </header>
@@ -1606,15 +1617,15 @@ html:has(#anfrage[open]){overflow:hidden}
         <legend class="l"></legend>
         <div class="anf-chips"></div>
       </fieldset>
-      <div class="anf-zwei">
-        <label data-feld="datum" data-zeile="Datum" data-zeile-gross="Wunschtermin" data-tr="data-zeile data-zeile-gross" data-en-zeile="Date" data-en-zeile-gross="Preferred date" data-es-zeile="Fecha" data-es-zeile-gross="Fecha deseada"><span class="l"></span><input type="date" name="datum"></label>
-        <label data-feld="ort" data-zeile="Ort" data-zeile-gross="Lieferadresse" data-tr="data-zeile data-zeile-gross" data-en-zeile="Place" data-en-zeile-gross="Delivery address" data-es-zeile="Lugar" data-es-zeile-gross="Direcci&oacute;n de entrega"><span class="l"></span><input type="text" name="ort" autocomplete="off"></label>
+      <div class="anf-zwei" data-nur="catering foodtruck gross">
+        <label data-feld="datum" data-nur="catering foodtruck gross" data-zeile="Datum" data-zeile-gross="Wunschtermin" data-tr="data-zeile data-zeile-gross" data-en-zeile="Date" data-en-zeile-gross="Preferred date" data-es-zeile="Fecha" data-es-zeile-gross="Fecha deseada"><span class="l"></span><input type="date" name="datum"></label>
+        <label data-feld="ort" data-nur="catering foodtruck gross" data-zeile="Ort" data-zeile-gross="Lieferadresse" data-tr="data-zeile data-zeile-gross" data-en-zeile="Place" data-en-zeile-gross="Delivery address" data-es-zeile="Lugar" data-es-zeile-gross="Direcci&oacute;n de entrega"><span class="l"></span><input type="text" name="ort" autocomplete="off"></label>
       </div>
       <div class="anf-zwei">
         <label data-feld="name" data-zeile="Name" data-tr="data-zeile" data-en-zeile="Name" data-es-zeile="Nombre"><span class="l"></span><input type="text" name="name" autocomplete="name"></label>
         <label data-feld="tel" data-zeile="Telefon" data-tr="data-zeile" data-en-zeile="Phone" data-es-zeile="Tel&eacute;fono"><span class="l"></span><input type="tel" name="tel" autocomplete="tel"></label>
       </div>
-      <label data-feld="notiz" data-zeile="Noch etwas?" data-tr="data-zeile" data-en-zeile="Anything else?" data-es-zeile="&iquest;Algo m&aacute;s?"><span class="l"></span><textarea name="notiz" rows="2" placeholder="Uhrzeit, W&uuml;nsche, Fragen" data-tr="placeholder" data-en-placeholder="Time, wishes, questions" data-es-placeholder="Hora, deseos, preguntas"></textarea></label>
+      <label data-feld="notiz" data-zeile="Noch etwas?" data-zeile-frage="Deine Frage" data-tr="data-zeile data-zeile-frage" data-en-zeile="Anything else?" data-en-zeile-frage="Your question" data-es-zeile="&iquest;Algo m&aacute;s?" data-es-zeile-frage="Tu pregunta"><span class="l"></span><textarea name="notiz" rows="2" placeholder="Uhrzeit, W&uuml;nsche, Fragen" data-tr="placeholder" data-en-placeholder="Time, wishes, questions" data-es-placeholder="Hora, deseos, preguntas"></textarea></label>
     </div>
     <footer class="anf-fuss">
       <a class="btn btn-gold anf-senden" href="#" data-text-mail="Per E-Mail senden" data-text-wa="Per WhatsApp senden" data-tr="data-text-mail data-text-wa" data-en-text-mail="Send by email" data-en-text-wa="Send via WhatsApp" data-es-text-mail="Enviar por correo" data-es-text-wa="Enviar por WhatsApp"><span class="t">Senden</span> <span class="arw">&rarr;</span></a>
@@ -1731,10 +1742,14 @@ addEventListener('scroll',function(){ nav.classList.toggle('stuck', scrollY>60);
 /* ---------- Smooth anchor ---------- */
 /* Der Bestellen-Knopf ist ausgenommen - der oeffnet den Korb und
    entscheidet selbst, ob stattdessen zu den Sorten gescrollt wird.
-   Ebenso "Catering anfragen" im Hero: der oeffnet das Anfrage-Fenster. */
+   Ebenso "Catering anfragen" im Hero: der oeffnet das Anfrage-Fenster.
+   Das Ziel wird beim Klick gelesen, nicht beim Laden: Der Senden-Knopf im
+   Fenster beginnt mit "#" und traegt spaeter mailto: oder wa.me - das
+   durch querySelector zu schicken, warf bei jedem Senden einen Fehler. */
 document.querySelectorAll('a[href^="#"]:not([data-korb]):not([data-anfrage])').forEach(function(a){
   a.addEventListener('click',function(e){
-    var t=document.querySelector(a.getAttribute('href')); if(!t)return;
+    var h=a.getAttribute('href')||'';
+    var t=/^#[\w-]+$/.test(h)?document.querySelector(h):null; if(!t)return;
     e.preventDefault();
     scrollTo({top:t.getBoundingClientRect().top+scrollY-70,behavior:'smooth'});
   });
@@ -2439,7 +2454,7 @@ document.querySelectorAll('a[href^="#"]:not([data-korb]):not([data-anfrage])').f
       }
       if(!w) return;
       if(name==='datum') w=datum(w);
-      if(name==='notiz'){ z.push(''); z.push(w); }
+      if(name==='notiz'){ if(z[z.length-1]!=='') z.push(''); z.push(w); }
       else { z.push(beschriftung(f)+': '+w); }
     });
     z.push(''); z.push(dlg.getAttribute('data-dank'));
@@ -2487,14 +2502,17 @@ document.querySelectorAll('a[href^="#"]:not([data-korb]):not([data-anfrage])').f
   dlg.querySelector('.x').addEventListener('click',function(){ dlg.close(); });
   // Ein Tipp neben das Fenster schliesst es.
   dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
+  // Die Hinweise nennen die Adresse: Ohne Mailprogramm oeffnet ein
+  // Mail-Link nichts, dann weiss man wenigstens, wohin der Text soll.
+  function hinweis(k){ return dlg.getAttribute(k).replace('{an}',art_().getAttribute('data-an')); }
   senden.addEventListener('click',function(){
-    status.textContent=dlg.getAttribute(kanal==='wa'?'data-hinweis-wa':'data-hinweis-mail');
+    status.textContent=hinweis(kanal==='wa'?'data-hinweis-wa':'data-hinweis-mail');
   });
   // Hilft am Rechner ohne Mailprogramm und am Handy ohne Mail-App.
   dlg.querySelector('.anf-kopie').addEventListener('click',function(){
     var t=text();
     if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(function(){ status.textContent=dlg.getAttribute('data-kopiert'); },
+      navigator.clipboard.writeText(t).then(function(){ status.textContent=hinweis('data-kopiert'); },
                                             function(){ status.textContent=t; });
     } else { status.textContent=t; }
   });
